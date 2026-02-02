@@ -1,0 +1,9 @@
+{
+  "name": "context-docs",
+  "version": "0.1.0",
+  "description": "Context-aware documentation management for Claude Code. Generate ADRs, Design Docs, Runbooks, and Handoffs with intelligent indexing for efficient context retrieval.",
+  "author": {
+    "name": "lidarman"
+  },
+  "keywords": ["documentation", "adr", "design-doc", "runbook", "handoff", "context-management"]
+}
