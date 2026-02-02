@@ -38,17 +38,51 @@ The first argument `$1` specifies the document type:
    - If `$2` provided, use it as title (convert to kebab-case)
    - Otherwise, derive title from document content
 
-6. **Determine document root (Monorepo Support)**:
-   - Find the nearest submodule boundary by checking for `.git` file (not directory) in parent directories
-   - Use `bash ${CLAUDE_PLUGIN_ROOT}/scripts/find-doc-root.sh $(pwd)` to determine placement
-   - If in a submodule, use that submodule's root for `context_doc/`
-   - If not in a submodule, use project root (`$CLAUDE_PROJECT_DIR`)
-   - This keeps module-specific documentation with its module
+6. **Ask user for output location**: Use AskUserQuestion to prompt where to save the document.
 
-7. **Save document**: Write to `<doc_root>/context_doc/<type>/<filename>.md`
-   - Create `<doc_root>/context_doc/<type>/` directory if it doesn't exist
+   **Build options dynamically:**
+   - Option 1: **Project root** (`$CLAUDE_PROJECT_DIR`) - Recommended for project-wide docs
+   - Option 2: **Current directory** (`$(pwd)`) - Good for module-specific documentation
+   - Option 3: **Custom path** - User enters any valid directory path
+   - Option 4+ (if exists): **Recent paths** from `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`
 
-8. **Update index**: Add entry to `<doc_root>/context_doc/INDEX.md`
+   **AskUserQuestion format:**
+   ```
+   question: "Where should this <type> document be saved?"
+   header: "Output Path"
+   options:
+     - label: "Project root (Recommended)"
+       description: "$CLAUDE_PROJECT_DIR/context_doc/<type>/"
+     - label: "Current directory"
+       description: "$(pwd)/context_doc/<type>/"
+     - label: "Custom path"
+       description: "Enter a custom directory path"
+     - label: "Recent: <last_used_path>" (if doc-paths.json exists)
+       description: "<last_used_path>/context_doc/<type>/"
+   ```
+
+   **Handle response:**
+   - If "Project root" selected: use `$CLAUDE_PROJECT_DIR`
+   - If "Current directory" selected: use current working directory
+   - If "Custom path" selected: ask for path input and validate it exists (or offer to create)
+   - If "Recent" selected: use the corresponding path from history
+
+7. **Save path preference**: After user selects, update `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`:
+   ```json
+   {
+     "recent_paths": ["<selected_path>", ...previous up to 5],
+     "last_used": "<selected_path>"
+   }
+   ```
+   - Add selected path to front of `recent_paths` (if not already present)
+   - Keep maximum 5 entries (LRU eviction)
+   - Set `last_used` to selected path
+   - Create `.claude/` directory if needed
+
+8. **Save document**: Write to `<selected_path>/context_doc/<type>/<filename>.md`
+   - Create `<selected_path>/context_doc/<type>/` directory if it doesn't exist
+
+9. **Update index**: Add entry to `<selected_path>/context_doc/INDEX.md`
    - Create INDEX.md if it doesn't exist (use template format below)
    - Add new row with: Title, Path, Type, Keywords, Date
 
@@ -66,34 +100,35 @@ The first argument `$1` specifies the document type:
 Extract 3-5 relevant keywords from the document content for searchability.
 Focus on: technologies, concepts, component names, problem domains.
 
-## Monorepo Support
+## Path History
 
-When working in a monorepo with git submodules:
-- Documents are created in the `context_doc/` directory of the nearest submodule
-- Root-level architecture docs belong in the main project root
-- This keeps module-specific documentation with its module
+Document output paths are saved in `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`:
+- Stores up to 5 recently used paths
+- Most recent path shown as "Recent" option in selection
+- Project-specific (different projects have separate histories)
 
-**Submodule Detection:**
-```bash
-# A submodule root has .git as a FILE (not directory)
-[ -f .git ]  # Returns true for submodule roots
-```
+## Example Structure
 
-**Example Structure:**
 ```
 project-root/
-├── context_doc/           # Root-level docs (architecture)
+├── .claude/
+│   └── doc-paths.json       # Path history
+├── context_doc/             # Root-level docs (if user selects project root)
+│   ├── INDEX.md
+│   └── adr/
 ├── packages/
-│   ├── api/               # Submodule
-│   │   └── context_doc/   # API-specific docs created here
-│   └── ui/                # Submodule
-│       └── context_doc/   # UI-specific docs created here
+│   ├── api/
+│   │   └── context_doc/     # API-specific docs (if user selects this path)
+│   │       ├── INDEX.md
+│   │       └── design/
+│   └── ui/
+│       └── context_doc/     # UI-specific docs (if user selects this path)
 ```
 
 ## Output
 
 After completion, report:
 - Document type created
-- File path (including which module/root it was saved to)
+- File path (full path where it was saved)
 - Keywords indexed
 - Brief summary of content

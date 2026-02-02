@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Claude Code plugin called `context-docs` that provides context-aware documentation management. It generates ADR, Design Doc, Runbook, and Handoff documents with intelligent indexing for efficient context retrieval. Supports both single-repo and monorepo (git submodule) structures.
+This is a Claude Code plugin called `context-docs` that provides context-aware documentation management. It generates ADR, Design Doc, Runbook, and Handoff documents with intelligent indexing for efficient context retrieval.
 
 ## Testing the Plugin
 
@@ -14,7 +14,6 @@ claude --plugin-dir /path/to/context-docs
 
 # Test scripts directly
 CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/start
-CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-doc-root.sh /path/to/start
 ```
 
 ## Architecture
@@ -28,9 +27,10 @@ SessionStart Hook (hooks/hooks.json)
         → Outputs JSON with systemMessage containing merged indices
 
 /doc command (commands/doc.md)
-    → scripts/find-doc-root.sh (determines output location)
+    → AskUserQuestion (user selects output location)
     → Creates document using skills/documentation/templates/<type>.md
-    → scripts/update-index.sh (updates INDEX.md)
+    → scripts/update-index.sh (updates INDEX.md at selected location)
+    → Saves path preference to .claude/doc-paths.json
 
 /recall command (commands/recall.md)
     → Uses context-loader agent (agents/context-loader.md)
@@ -40,10 +40,14 @@ SessionStart Hook (hooks/hooks.json)
 
 ### Key Design Decisions
 
-**Monorepo Support**:
+**Output Location Selection**:
+- User explicitly chooses output path via AskUserQuestion
+- Options: Project root, current directory, custom path, or recent paths
+- Path history stored in `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`
+
+**Context Loading**:
 - `find-context-docs.sh`: Traverses from current path UP to project root, collecting all `context_doc/INDEX.md` files (nearest first)
-- `find-doc-root.sh`: Detects submodule boundaries by checking for `.git` FILE (not directory) - submodules have `.git` as a file pointing to main repo
-- Sibling module indices are never loaded - only ancestor paths
+- Sibling directory indices are never loaded - only ancestor paths
 
 **Index Format**: Markdown table in `context_doc/INDEX.md` with columns: Title, Path, Type, Keywords, Date
 
@@ -59,10 +63,9 @@ SessionStart Hook (hooks/hooks.json)
 | Path | Purpose |
 |------|---------|
 | `scripts/find-context-docs.sh` | Find all INDEX.md files from path to root |
-| `scripts/find-doc-root.sh` | Determine document output location (submodule detection) |
 | `scripts/load-index.sh` | SessionStart hook - loads and merges indices |
-| `scripts/update-index.sh` | Appends entry to INDEX.md |
-| `commands/doc.md` | Instructions for /doc command |
+| `scripts/update-index.sh` | Appends entry to INDEX.md (accepts doc_root parameter) |
+| `commands/doc.md` | Instructions for /doc command (includes AskUserQuestion for path selection) |
 | `commands/recall.md` | Instructions for /recall command |
 | `agents/context-loader.md` | Agent definition for document retrieval |
 | `skills/documentation/SKILL.md` | Documentation standards and guidelines |

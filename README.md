@@ -10,11 +10,12 @@ This plugin helps you create and manage project documentation that serves dual p
 
 ## Features
 
-- **Document Generation** (`/doc <type>`) - Generate ADR, Design Doc, Runbook, or Handoff from current context
+- **Document Generation** (`/doc <type>`) - Generate ADR, Design Doc, Runbook, or Handoff with interactive path selection
 - **Smart Recall** (`/recall [query]`) - Load relevant documents based on current task or explicit query
 - **Automatic Indexing** - Maintains a searchable index of all documents
 - **Session Integration** - Automatically loads document index at session start
-- **Monorepo Support** - Hierarchical context loading for git submodules
+- **Flexible Output** - Save documents to any location (project root, current directory, or custom path)
+- **Hierarchical Context Loading** - Load indices from multiple locations in monorepos
 
 ## Plugin Components
 
@@ -41,7 +42,6 @@ context-docs/
 │   └── hooks.json           # SessionStart hook
 ├── scripts/
 │   ├── find-context-docs.sh # Find indices from path to root
-│   ├── find-doc-root.sh     # Find document output location
 │   ├── load-index.sh        # Index loader script
 │   └── update-index.sh      # Index updater script
 ├── skills/
@@ -76,6 +76,17 @@ context-docs/
 /doc handoff   # Create a Handoff document
 ```
 
+When you run `/doc`, you'll be asked where to save the document:
+
+```
+Where should this ADR document be saved?
+
+1. Project root (Recommended): /path/to/project/context_doc/adr/
+2. Current directory: /path/to/current/context_doc/adr/
+3. Custom path: Enter a custom directory path
+4. Recent: /path/to/packages/api/ (last used)
+```
+
 ### Recall Documents
 
 ```bash
@@ -87,77 +98,58 @@ context-docs/
 
 - **Session Start**: Document index (`context_doc/INDEX.md`) is automatically loaded
 - **Document Creation**: Index is automatically updated when documents are generated
+- **Path History**: Recently used output paths are remembered and shown as options
 
 ## Project Directory Structure
 
-Documents are stored in `context_doc/` at your project root:
+Documents are stored in `context_doc/` at your chosen location:
 
 ```
-context_doc/
-├── INDEX.md          # Document index (auto-maintained)
-├── adr/              # Architecture Decision Records
-├── design/           # Design Documents
-├── runbook/          # Runbooks
-└── handoff/          # Handoff documents
+your-chosen-path/
+├── context_doc/
+│   ├── INDEX.md          # Document index (auto-maintained)
+│   ├── adr/              # Architecture Decision Records
+│   ├── design/           # Design Documents
+│   ├── runbook/          # Runbooks
+│   └── handoff/          # Handoff documents
 ```
 
-## Monorepo Support
+## Multiple Documentation Locations
 
-For projects with git submodules, context-docs supports hierarchical documentation.
-
-### Monorepo Structure
+You can have `context_doc/` directories at multiple locations in your project:
 
 ```
-project-root/                     # Main repo
-├── context_doc/                  # Root-level docs (architecture)
+project-root/
+├── .claude/
+│   └── doc-paths.json       # Path history (auto-maintained)
+├── context_doc/             # Root-level docs (architecture, overall design)
 │   ├── INDEX.md
 │   └── adr/
 ├── packages/
-│   ├── api/                      # Submodule
-│   │   ├── context_doc/          # API-specific docs
-│   │   │   ├── INDEX.md
-│   │   │   └── design/
-│   │   └── src/
-│   └── ui/                       # Submodule
-│       ├── context_doc/          # UI-specific docs
-│       │   └── INDEX.md
-│       └── src/
+│   ├── api/
+│   │   └── context_doc/     # API-specific docs
+│   │       ├── INDEX.md
+│   │       └── design/
+│   └── ui/
+│       └── context_doc/     # UI-specific docs
+│           └── INDEX.md
 ```
 
-### How It Works
+### Context Loading Behavior
 
-**Document Generation (`/doc`):**
-- Detects if you're in a submodule (checks for `.git` file)
-- Creates `context_doc/` in the appropriate location
-- Submodule docs stay with their module
-- Root-level docs go to project root
-
-**Context Loading (`/recall`, SessionStart):**
+When using `/recall` or at session start:
 - Traverses from current file location to project root
 - Loads all `context_doc/INDEX.md` files in the path
-- Nearest module context has highest relevance
-- Sibling modules are NOT loaded (avoids irrelevant context)
+- Nearest location has highest relevance
+- Sibling directories are NOT loaded (avoids irrelevant context)
 
-### Example Scenario
-
-When editing `packages/api/src/handlers.ts`:
+**Example**: Working on `packages/api/src/handlers.ts`:
 
 | Loaded | Path | Reason |
 |--------|------|--------|
-| ✅ Yes | `packages/api/context_doc/INDEX.md` | Nearest module |
+| ✅ Yes | `packages/api/context_doc/INDEX.md` | Nearest location |
 | ✅ Yes | `context_doc/INDEX.md` | Root architecture |
-| ❌ No | `packages/ui/context_doc/INDEX.md` | Different module path |
-
-### Submodule Detection
-
-Git submodules are detected by checking for a `.git` file (not directory):
-- Submodule roots have `.git` as a **file** pointing to the main repo
-- Regular repo roots have `.git` as a **directory**
-
-```bash
-# Check if current directory is a submodule root
-[ -f .git ]  # Returns true for submodule roots
-```
+| ❌ No | `packages/ui/context_doc/INDEX.md` | Different branch path |
 
 ## Index Format
 
@@ -210,18 +202,15 @@ ln -s /path/to/context-docs ~/.claude/plugins/context-docs
 
 2. **Verify commands**: Run `/help` to confirm commands are available
 
-3. **Test document generation**: Run `/doc adr` to create an ADR
+3. **Test document generation**: Run `/doc adr` and select an output location
 
 4. **Test recall**: Run `/recall` to verify index loading
 
-### Testing Monorepo Support
+### Testing Context Loading
 
 ```bash
 # Test find-context-docs.sh
-bash scripts/find-context-docs.sh /path/to/submodule/src
-
-# Test find-doc-root.sh
-bash scripts/find-doc-root.sh /path/to/submodule/src
+CLAUDE_PROJECT_DIR=/path/to/project bash scripts/find-context-docs.sh /path/to/subdir/src
 ```
 
 ## How It Works
@@ -231,22 +220,22 @@ bash scripts/find-doc-root.sh /path/to/submodule/src
 1. **Index-based retrieval**: Instead of loading all documents, only the index is loaded at session start
 2. **Keyword matching**: Documents are retrieved based on keyword relevance to current task
 3. **Selective loading**: Only relevant documents are fully loaded into context
-4. **Hierarchical loading**: In monorepos, only ancestor path indices are loaded
+4. **Hierarchical loading**: Only ancestor path indices are loaded (avoids unrelated context)
 
 ### Workflow
 
 ```
 Session Start
     ↓
-Load INDEX.md (hierarchical in monorepo)
+Load INDEX.md (from current path to root)
     ↓
 Work on task
     ↓
-/recall → Load relevant docs (from all ancestor indices)
+/recall → Load relevant docs
     ↓
-/doc <type> → Generate documentation (in appropriate module)
+/doc <type> → User selects output location
     ↓
-Update INDEX.md (in appropriate module)
+Generate documentation → Update INDEX.md
 ```
 
 ## License
