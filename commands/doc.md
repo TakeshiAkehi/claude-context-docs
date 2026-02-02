@@ -67,7 +67,40 @@ The first argument `$1` specifies the document type:
    - If "Custom path" selected: ask for path input and validate it exists (or offer to create)
    - If "Recent" selected: use the corresponding path from history
 
-7. **Save path preference**: After user selects, update `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`:
+7. **Preview document and get user approval**: Before saving, show the generated document to the user for review.
+
+   **Display format:**
+   ```
+   ## Document Preview
+
+   **Type**: <type>
+   **Filename**: <filename>.md
+   **Output path**: <selected_path>/context_doc/<type>/
+
+   ---
+   <full document content>
+   ---
+   ```
+
+   **Use AskUserQuestion to confirm:**
+   ```
+   question: "このドキュメントの内容を確認してください。保存してよろしいですか？"
+   header: "確認"
+   options:
+     - label: "保存する"
+       description: "このままファイルに保存します"
+     - label: "修正を依頼"
+       description: "修正点を伝えて内容を調整します"
+     - label: "キャンセル"
+       description: "ドキュメントを保存せずに終了します"
+   ```
+
+   **Handle response:**
+   - If "保存する" selected: proceed to save
+   - If "修正を依頼" selected: ask what to change, regenerate, and show preview again
+   - If "キャンセル" selected: abort without saving, inform user
+
+8. **Save path preference**: After user approves, update `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`:
    ```json
    {
      "recent_paths": ["<selected_path>", ...previous up to 5],
@@ -79,12 +112,12 @@ The first argument `$1` specifies the document type:
    - Set `last_used` to selected path
    - Create `.claude/` directory if needed
 
-8. **Save document**: Write to `<selected_path>/context_doc/<type>/<filename>.md`
+9. **Save document**: Write to `<selected_path>/context_doc/<type>/<filename>.md`
    - Create `<selected_path>/context_doc/<type>/` directory if it doesn't exist
 
-9. **Update index**: Add entry to `<selected_path>/context_doc/INDEX.md`
-   - Create INDEX.md if it doesn't exist (use template format below)
-   - Add new row with: Title, Path, Type, Keywords, Date
+10. **Update index**: Add entry to `<selected_path>/context_doc/INDEX.md`
+    - Create INDEX.md if it doesn't exist (use template format below)
+    - Add new row with: Title, Path, Type, Keywords, Date
 
 ## Index Format
 
@@ -127,8 +160,12 @@ project-root/
 
 ## Output
 
-After completion, report:
+**On successful save**, report:
 - Document type created
 - File path (full path where it was saved)
 - Keywords indexed
 - Brief summary of content
+
+**On cancel**, report:
+- Document creation was cancelled by user
+- No files were written
