@@ -1,0 +1,16 @@
+{
+  "name": "context-docs-marketplace",
+  "owner": {
+    "name": "lidarman"
+  },
+  "metadata": {
+    "description": "Context-aware documentation plugins for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "context-docs",
+      "source": "./context-docs",
+      "description": "Context-aware documentation management. Generate ADRs, Design Docs, Runbooks, and Handoffs with intelligent indexing."
+    }
+  ]
+}
