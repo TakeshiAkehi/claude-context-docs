@@ -13,10 +13,11 @@ The first argument `$1` specifies the document type:
 - `design` - Design Document
 - `runbook` - Runbook (operational procedures)
 - `handoff` - Session handoff document
+- `howto` - How-To (development patterns and solutions)
 
 ## Process
 
-1. **Validate document type**: Ensure `$1` is one of: adr, design, runbook, handoff. If invalid or missing, ask the user which type to create.
+1. **Validate document type**: Ensure `$1` is one of: adr, design, runbook, handoff, howto. If invalid or missing, ask the user which type to create.
 
 2. **Extract context from conversation**: Analyze the current conversation to identify:
    - Key decisions made
@@ -29,6 +30,7 @@ The first argument `$1` specifies the document type:
    - For Design: Requirements, constraints, dependencies
    - For Runbook: Prerequisites, steps, error handling
    - For Handoff: Current state, next steps, blockers
+   - For How-To: Problem description, solution approach, example code
 
 4. **Generate document**: Create the document following the template at `${CLAUDE_PLUGIN_ROOT}/skills/documentation/templates/<type>.md`
 

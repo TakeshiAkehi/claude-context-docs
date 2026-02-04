@@ -1,6 +1,6 @@
 ---
 name: documentation-standards
-description: This skill should be used when creating ADR, Design Doc, Runbook, or Handoff documents, when following documentation best practices, when structuring technical documentation, or when maintaining document indexes.
+description: This skill should be used when creating ADR, Design Doc, Runbook, Handoff, or How-To documents, when following documentation best practices, when structuring technical documentation, or when maintaining document indexes.
 version: 1.0.0
 ---
 
@@ -83,6 +83,25 @@ version: 1.0.0
 - Next Steps
 
 **Template**: `${CLAUDE_PLUGIN_ROOT}/skills/documentation/templates/handoff.md`
+
+### How-To
+
+**Purpose**: Document reusable patterns and solutions for specific development problems.
+
+**When to create**:
+- Solving a recurring problem with a non-obvious solution
+- Discovering a useful pattern or technique
+- Debugging an issue that others might face
+- Finding a workaround for a framework limitation
+
+**Key sections**:
+- Problem (What specific problem does this solve?)
+- Solution (High-level approach)
+- Example (Code snippets, before/after)
+- When to Use / When NOT to Use
+- Notes (Caveats, limitations, alternatives)
+
+**Template**: `${CLAUDE_PLUGIN_ROOT}/skills/documentation/templates/howto.md`
 
 ## File Naming Convention
 
