@@ -21,11 +21,6 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
 ### Component Flow
 
 ```
-SessionStart Hook (hooks/hooks.json)
-    → scripts/load-index.sh
-        → scripts/find-context-docs.sh (hierarchical index discovery)
-        → Outputs JSON with systemMessage containing merged indices
-
 /doc command (commands/doc.md)
     → AskUserQuestion (user selects output location)
     → Creates document using skills/documentation/templates/<type>.md
@@ -35,6 +30,7 @@ SessionStart Hook (hooks/hooks.json)
 /recall command (commands/recall.md)
     → Uses context-loader agent (agents/context-loader.md)
     → scripts/find-context-docs.sh (finds all relevant indices)
+    → scripts/load-index.sh (loads and merges indices)
     → Loads and presents relevant documents
 ```
 
@@ -45,9 +41,10 @@ SessionStart Hook (hooks/hooks.json)
 - Options: Project root, current directory, custom path, or recent paths
 - Path history stored in `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`
 
-**Context Loading**:
+**Context Loading (on-demand via /recall)**:
 - `find-context-docs.sh`: Traverses from current path UP to project root, collecting all `context_doc/INDEX.md` files (nearest first)
 - Sibling directory indices are never loaded - only ancestor paths
+- No automatic loading at session start — user invokes `/recall` when context is needed
 
 **Index Format**: Markdown table in `context_doc/INDEX.md` with columns: Title, Path, Type, Keywords, Date
 
@@ -63,9 +60,11 @@ SessionStart Hook (hooks/hooks.json)
 | Path | Purpose |
 |------|---------|
 | `scripts/find-context-docs.sh` | Find all INDEX.md files from path to root |
-| `scripts/load-index.sh` | SessionStart hook - loads and merges indices |
+| `scripts/load-index.sh` | Loads and merges document indices (used by /recall) |
 | `scripts/update-index.sh` | Appends entry to INDEX.md (accepts doc_root parameter) |
 | `commands/doc.md` | Instructions for /doc command (includes AskUserQuestion for path selection) |
 | `commands/recall.md` | Instructions for /recall command |
 | `agents/context-loader.md` | Agent definition for document retrieval |
 | `skills/documentation/SKILL.md` | Documentation standards and guidelines |
+
+

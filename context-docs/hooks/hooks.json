@@ -1,17 +1,4 @@
 {
-  "description": "Context-docs hooks for automatic document index loading",
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/load-index.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  }
+  "description": "Context-docs hooks",
+  "hooks": {}
 }
