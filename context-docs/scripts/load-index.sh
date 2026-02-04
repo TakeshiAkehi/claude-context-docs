@@ -1,5 +1,5 @@
 #!/bin/bash
-# SessionStart hook: Load document indices for context-aware retrieval
+# Load document indices for context-aware retrieval (invoked by /recall)
 # Supports monorepo: loads from current location up to project root
 set -euo pipefail
 
