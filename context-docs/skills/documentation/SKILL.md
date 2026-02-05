@@ -105,14 +105,15 @@ version: 1.0.0
 
 ## File Naming Convention
 
-All documents use the format: `YYYYMMDD-HHMM-<title>.md`
+All documents use the format: `YYYYMMDD-<doctype>-<title>.md`
 
-- **Date/Time**: Use current timestamp at creation
+- **Date**: Use current date at creation (YYYYMMDD)
+- **Doctype**: Document type (adr, design, runbook, handoff, howto)
 - **Title**: Kebab-case, descriptive, 3-5 words
 - **Examples**:
-  - `20260202-1430-api-authentication-jwt.md`
-  - `20260202-0900-user-service-design.md`
-  - `20260201-1645-database-migration.md`
+  - `20260202-adr-api-authentication-jwt.md`
+  - `20260202-design-user-service.md`
+  - `20260201-runbook-database-migration.md`
 
 ## Index Management
 
@@ -127,7 +128,7 @@ All documents use the format: `YYYYMMDD-HHMM-<title>.md`
 
 | Title | Path | Type | Keywords | Date |
 |-------|------|------|----------|------|
-| API Authentication with JWT | adr/20260202-1430-api-auth-jwt.md | ADR | auth, jwt, security, api | 2026-02-02 |
+| API Authentication with JWT | docs/20260202-adr-api-auth-jwt.md | ADR | auth, jwt, security, api | 2026-02-02 |
 ```
 
 ### Keywords Guidelines

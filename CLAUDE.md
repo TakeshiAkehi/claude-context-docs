@@ -22,7 +22,7 @@ The project is structured as a single-plugin marketplace with a standardized mar
 │   └── CLAUDE.md              # Plugin-specific guidance
 ├── .claude-plugin/            # Marketplace manifest
 ├── .claude/                   # Local Claude Code settings
-└── context_doc/               # Generated documentation directory
+└── context_doc/               # Generated documentation directory (docs/ subdirectory)
 ```
 
 ## Key Architecture Decisions
@@ -135,14 +135,15 @@ Verify script output format matches expected JSON structure with `"continue": tr
 
 ## Document Naming Convention
 
-All documents follow: `YYYYMMDD-HHMM-<title>.md`
+All documents follow: `YYYYMMDD-<doctype>-<title>.md`
 
-Example: `20260202-1430-api-authentication-jwt.md`
+Example: `20260202-adr-api-authentication-jwt.md`
 
 This format ensures:
 - **Chronological sorting**: Dates appear naturally in file listings
-- **Uniqueness**: Hour + minute + title prevents collisions
-- **Searchability**: Timestamps enable finding recent documents
+- **Type identification**: Document type is visible in the filename
+- **Uniqueness**: Date + type + title prevents collisions
+- **Searchability**: Date prefix enables finding recent documents
 
 ## Index Format
 
@@ -157,8 +158,8 @@ Example:
 
 | Title | Path | Type | Keywords | Date |
 |-------|------|------|----------|------|
-| API Authentication Strategy | adr/20260201-1000-api-auth.md | ADR | auth, jwt, oauth, security | 2026-02-01 |
-| User Service Design | design/20260202-0900-user-service.md | Design | user, crud, api, database | 2026-02-02 |
+| API Authentication Strategy | docs/20260201-adr-api-auth.md | ADR | auth, jwt, oauth, security | 2026-02-01 |
+| User Service Design | docs/20260202-design-user-service.md | Design | user, crud, api, database | 2026-02-02 |
 ```
 
 ## Development Guidelines

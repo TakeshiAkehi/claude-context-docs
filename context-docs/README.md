@@ -81,8 +81,8 @@ When you run `/doc`, you'll be asked where to save the document:
 ```
 Where should this ADR document be saved?
 
-1. Project root (Recommended): /path/to/project/context_doc/adr/
-2. Current directory: /path/to/current/context_doc/adr/
+1. Project root (Recommended): /path/to/project/context_doc/docs/
+2. Current directory: /path/to/current/context_doc/docs/
 3. Custom path: Enter a custom directory path
 4. Recent: /path/to/packages/api/ (last used)
 ```
@@ -108,10 +108,7 @@ Documents are stored in `context_doc/` at your chosen location:
 your-chosen-path/
 ├── context_doc/
 │   ├── INDEX.md          # Document index (auto-maintained)
-│   ├── adr/              # Architecture Decision Records
-│   ├── design/           # Design Documents
-│   ├── runbook/          # Runbooks
-│   └── handoff/          # Handoff documents
+│   └── docs/             # All documents (ADR, Design, Runbook, Handoff, How-To)
 ```
 
 ## Multiple Documentation Locations
@@ -124,12 +121,12 @@ project-root/
 │   └── doc-paths.json       # Path history (auto-maintained)
 ├── context_doc/             # Root-level docs (architecture, overall design)
 │   ├── INDEX.md
-│   └── adr/
+│   └── docs/
 ├── packages/
 │   ├── api/
 │   │   └── context_doc/     # API-specific docs
 │   │       ├── INDEX.md
-│   │       └── design/
+│   │       └── docs/
 │   └── ui/
 │       └── context_doc/     # UI-specific docs
 │           └── INDEX.md
@@ -160,18 +157,18 @@ The `INDEX.md` file maintains a searchable table:
 
 | Title | Path | Type | Keywords | Date |
 |-------|------|------|----------|------|
-| API Authentication | adr/20260201-1000-api-auth.md | ADR | auth, jwt, oauth | 2026-02-01 |
-| User Service Design | design/20260202-0900-user-service.md | Design | user, crud, api | 2026-02-02 |
+| API Authentication | docs/20260201-adr-api-auth.md | ADR | auth, jwt, oauth | 2026-02-01 |
+| User Service Design | docs/20260202-design-user-service.md | Design | user, crud, api | 2026-02-02 |
 ```
 
 ## File Naming Convention
 
-All documents follow the format: `YYYYMMDD-HHMM-title.md`
+All documents follow the format: `YYYYMMDD-<doctype>-title.md`
 
 Examples:
-- `20260202-1430-api-authentication-jwt.md`
-- `20260202-0900-user-service-design.md`
-- `20260201-1645-database-migration.md`
+- `20260202-adr-api-authentication-jwt.md`
+- `20260202-design-user-service.md`
+- `20260201-runbook-database-migration.md`
 
 ## How It Works
 

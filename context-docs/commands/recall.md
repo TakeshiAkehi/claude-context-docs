@@ -59,7 +59,7 @@ Load relevant documentation from the project's context_doc directories to build 
 
 ### 1. [Title] (Type)
 - **Source**: [Root | module-path]
-- **Path**: context_doc/type/filename.md
+- **Path**: context_doc/docs/filename.md
 - **Keywords**: keyword1, keyword2, keyword3
 - **Relevance**: Why this document is relevant to current task
 - **Key Points**:

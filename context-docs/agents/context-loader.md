@@ -89,7 +89,7 @@ You are a context retrieval specialist that analyzes document indexes and loads 
 
 ### 1. [Document Title] (Type)
 - **Source**: [Root | module-path]
-- **Path**: context_doc/type/filename.md
+- **Path**: context_doc/docs/filename.md
 - **Keywords**: keyword1, keyword2
 - **Relevance**: [Why this document matches the current task]
 - **Key Points**:

@@ -41,8 +41,9 @@ The first argument `$1` specifies the document type:
 5. **Generate document**: Create the document following the template at `${CLAUDE_PLUGIN_ROOT}/skills/documentation/templates/<type>.md`
 
 6. **Determine filename**:
-   - Format: `YYYYMMDD-HHMM-<title>.md`
-   - Use current timestamp
+   - Format: `YYYYMMDD-<doctype>-<title>.md`
+   - Use current date (YYYYMMDD)
+   - `<doctype>` is the document type (adr, design, runbook, handoff, howto)
    - If `$2` provided, use it as title (convert to kebab-case)
    - Otherwise, derive title from document content
 
@@ -60,13 +61,13 @@ The first argument `$1` specifies the document type:
    header: "Output Path"
    options:
      - label: "Project root (Recommended)"
-       description: "$CLAUDE_PROJECT_DIR/context_doc/<type>/"
+       description: "$CLAUDE_PROJECT_DIR/context_doc/docs/"
      - label: "Current directory"
-       description: "$(pwd)/context_doc/<type>/"
+       description: "$(pwd)/context_doc/docs/"
      - label: "Custom path"
        description: "Enter a custom directory path"
      - label: "Recent: <last_used_path>" (if doc-paths.json exists)
-       description: "<last_used_path>/context_doc/<type>/"
+       description: "<last_used_path>/context_doc/docs/"
    ```
 
    **Handle response:**
@@ -83,7 +84,7 @@ The first argument `$1` specifies the document type:
 
    **Type**: <type>
    **Filename**: <filename>.md
-   **Output path**: <selected_path>/context_doc/<type>/
+   **Output path**: <selected_path>/context_doc/docs/
 
    ---
    <full document content>
@@ -120,8 +121,8 @@ The first argument `$1` specifies the document type:
    - Set `last_used` to selected path
    - Create `.claude/` directory if needed
 
-10. **Save document**: Write to `<selected_path>/context_doc/<type>/<filename>.md`
-    - Create `<selected_path>/context_doc/<type>/` directory if it doesn't exist
+10. **Save document**: Write to `<selected_path>/context_doc/docs/<filename>.md`
+    - Create `<selected_path>/context_doc/docs/` directory if it doesn't exist
 
 11. **Update index**: Add entry to `<selected_path>/context_doc/INDEX.md`
     - Create INDEX.md if it doesn't exist (use template format below)
@@ -156,12 +157,12 @@ project-root/
 │   └── doc-paths.json       # Path history
 ├── context_doc/             # Root-level docs (if user selects project root)
 │   ├── INDEX.md
-│   └── adr/
+│   └── docs/
 ├── packages/
 │   ├── api/
 │   │   └── context_doc/     # API-specific docs (if user selects this path)
 │   │       ├── INDEX.md
-│   │       └── design/
+│   │       └── docs/
 │   └── ui/
 │       └── context_doc/     # UI-specific docs (if user selects this path)
 ```
