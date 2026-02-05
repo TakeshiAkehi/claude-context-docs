@@ -33,12 +33,6 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
     → scripts/load-index.sh (loads and merges indices)
     → Loads and presents relevant documents
 
-/migrate command (commands/migrate.md)
-    → scripts/find-context-docs.sh (discovers context_doc/ locations)
-    → scripts/migrate-docs.sh --dry-run (preview changes)
-    → AskUserQuestion (user confirms migration)
-    → scripts/migrate-docs.sh (execute migration)
-    → Verifies results and reports summary
 ```
 
 ### Key Design Decisions
@@ -71,8 +65,6 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
 | `scripts/update-index.sh` | Appends entry to INDEX.md (accepts doc_root parameter) |
 | `commands/doc.md` | Instructions for /doc command (includes AskUserQuestion for path selection) |
 | `commands/recall.md` | Instructions for /recall command |
-| `commands/migrate.md` | Instructions for /migrate command (old → new structure) |
-| `scripts/migrate-docs.sh` | Migrates files from per-type subdirs to flat docs/ |
 | `agents/context-loader.md` | Agent definition for document retrieval |
 | `skills/documentation/SKILL.md` | Documentation standards and guidelines |
 

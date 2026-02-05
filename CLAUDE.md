@@ -15,7 +15,7 @@ The project is structured as a single-plugin marketplace with a standardized mar
 ├── context-docs/              # Main plugin directory
 │   ├── .claude-plugin/        # Plugin manifest
 │   ├── agents/                # Agent definitions for async tasks
-│   ├── commands/              # Command implementations (/doc, /recall, /migrate)
+│   ├── commands/              # Command implementations (/doc, /recall)
 │   ├── hooks/                 # Lifecycle hooks (SessionStart)
 │   ├── scripts/               # Shell scripts for file operations
 │   ├── skills/                # Skill definitions (documentation standards)
@@ -81,7 +81,6 @@ This standardization enables distribution and installation via `/plugin marketpl
 | `scripts/find-context-docs.sh` | Traverse from path to project root, collecting all `context_doc/INDEX.md` files. Output: list of index paths (nearest first). |
 | `scripts/load-index.sh` | SessionStart hook that loads and merges indices. Outputs JSON systemMessage containing merged documentation. |
 | `scripts/update-index.sh` | Append a new document entry to INDEX.md. Called after `/doc` generates a new document. |
-| `scripts/migrate-docs.sh` | Migrate files from old per-type subdirectories to flat `docs/` structure. Supports `--dry-run`. |
 
 All scripts handle absolute/relative path normalization and use `$CLAUDE_PROJECT_DIR` for cross-platform compatibility.
 
@@ -117,18 +116,6 @@ Load relevant documentation from `context_doc/` directories.
 
 **Related files**: `commands/recall.md`, `agents/context-loader.md`
 
-### `/migrate [path]`
-
-Migrate documentation from old per-type subdirectory structure to new flat `docs/` structure.
-
-**Process**:
-1. Discover `context_doc/` directories with old-style subdirectories
-2. Preview changes (dry-run)
-3. Confirm with user
-4. Execute migration (move files, rewrite INDEX.md, clean up empty dirs)
-
-**Related files**: `commands/migrate.md`, `scripts/migrate-docs.sh`
-
 ## Testing
 
 Test scripts independently by setting environment variables:
@@ -145,14 +132,6 @@ CLAUDE_PROJECT_DIR=/path/to/repo CLAUDE_PLUGIN_ROOT=/path/to/context-docs bash c
 ```
 
 Verify script output format matches expected JSON structure with `"continue": true` and `"systemMessage"` fields.
-
-```bash
-# Test migration (dry-run)
-bash context-docs/scripts/migrate-docs.sh --dry-run /path/to/context_doc
-
-# Test migration (execute)
-bash context-docs/scripts/migrate-docs.sh /path/to/context_doc
-```
 
 ## Document Naming Convention
 
