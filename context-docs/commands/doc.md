@@ -19,28 +19,34 @@ The first argument `$1` specifies the document type:
 
 1. **Validate document type**: Ensure `$1` is one of: adr, design, runbook, handoff, howto. If invalid or missing, ask the user which type to create.
 
-2. **Extract context from conversation**: Analyze the current conversation to identify:
+2. **Auto-recall existing documents**: Before generating the document, automatically load relevant existing documentation to ensure consistency and avoid duplication.
+   - Run the `/recall` command (using the Skill tool with skill "context-docs:recall") with keywords inferred from the document type and current conversation context
+   - If relevant documents are found, use them as additional context when generating the new document
+   - If no indices or documents exist yet, skip this step silently and proceed
+   - Do NOT ask the user for confirmation — this step runs automatically
+
+3. **Extract context from conversation**: Analyze the current conversation to identify:
    - Key decisions made
    - Problems discussed
    - Solutions implemented
    - Technical details relevant to the document type
 
-3. **Gather additional information**: If essential information is missing for the document type, use AskUserQuestion to collect:
+4. **Gather additional information**: If essential information is missing for the document type, use AskUserQuestion to collect:
    - For ADR: Decision context, alternatives considered, consequences
    - For Design: Requirements, constraints, dependencies
    - For Runbook: Prerequisites, steps, error handling
    - For Handoff: Current state, next steps, blockers
    - For How-To: Problem description, solution approach, example code
 
-4. **Generate document**: Create the document following the template at `${CLAUDE_PLUGIN_ROOT}/skills/documentation/templates/<type>.md`
+5. **Generate document**: Create the document following the template at `${CLAUDE_PLUGIN_ROOT}/skills/documentation/templates/<type>.md`
 
-5. **Determine filename**:
+6. **Determine filename**:
    - Format: `YYYYMMDD-HHMM-<title>.md`
    - Use current timestamp
    - If `$2` provided, use it as title (convert to kebab-case)
    - Otherwise, derive title from document content
 
-6. **Ask user for output location**: Use AskUserQuestion to prompt where to save the document.
+7. **Ask user for output location**: Use AskUserQuestion to prompt where to save the document.
 
    **Build options dynamically:**
    - Option 1: **Project root** (`$CLAUDE_PROJECT_DIR`) - Recommended for project-wide docs
@@ -69,7 +75,7 @@ The first argument `$1` specifies the document type:
    - If "Custom path" selected: ask for path input and validate it exists (or offer to create)
    - If "Recent" selected: use the corresponding path from history
 
-7. **Preview document and get user approval**: Before saving, show the generated document to the user for review.
+8. **Preview document and get user approval**: Before saving, show the generated document to the user for review.
 
    **Display format:**
    ```
@@ -102,7 +108,7 @@ The first argument `$1` specifies the document type:
    - If "修正を依頼" selected: ask what to change, regenerate, and show preview again
    - If "キャンセル" selected: abort without saving, inform user
 
-8. **Save path preference**: After user approves, update `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`:
+9. **Save path preference**: After user approves, update `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`:
    ```json
    {
      "recent_paths": ["<selected_path>", ...previous up to 5],
@@ -114,10 +120,10 @@ The first argument `$1` specifies the document type:
    - Set `last_used` to selected path
    - Create `.claude/` directory if needed
 
-9. **Save document**: Write to `<selected_path>/context_doc/<type>/<filename>.md`
-   - Create `<selected_path>/context_doc/<type>/` directory if it doesn't exist
+10. **Save document**: Write to `<selected_path>/context_doc/<type>/<filename>.md`
+    - Create `<selected_path>/context_doc/<type>/` directory if it doesn't exist
 
-10. **Update index**: Add entry to `<selected_path>/context_doc/INDEX.md`
+11. **Update index**: Add entry to `<selected_path>/context_doc/INDEX.md`
     - Create INDEX.md if it doesn't exist (use template format below)
     - Add new row with: Title, Path, Type, Keywords, Date
 
