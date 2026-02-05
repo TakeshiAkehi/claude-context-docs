@@ -105,7 +105,7 @@ Where should this ADR document be saved?
 
 ### Automatic Behavior
 
-- **Session Start**: Document index (`context_doc/INDEX.md`) is automatically loaded
+- **Session Start**: Document index (`context_doc/README.md`) is automatically loaded
 - **Document Creation**: Index is automatically updated when documents are generated
 - **Path History**: Recently used output paths are remembered and shown as options
 
@@ -116,7 +116,7 @@ Documents are stored in `context_doc/` at your chosen location:
 ```
 your-chosen-path/
 ├── context_doc/
-│   ├── INDEX.md          # Document index (auto-maintained)
+│   ├── README.md          # Document index (auto-maintained)
 │   └── docs/             # All documents (ADR, Design, Runbook, Handoff, How-To)
 ```
 
@@ -129,23 +129,23 @@ project-root/
 ├── .claude/
 │   └── doc-paths.json       # Path history (auto-maintained)
 ├── context_doc/             # Root-level docs (architecture, overall design)
-│   ├── INDEX.md
+│   ├── README.md
 │   └── docs/
 ├── packages/
 │   ├── api/
 │   │   └── context_doc/     # API-specific docs
-│   │       ├── INDEX.md
+│   │       ├── README.md
 │   │       └── docs/
 │   └── ui/
 │       └── context_doc/     # UI-specific docs
-│           └── INDEX.md
+│           └── README.md
 ```
 
 ### Context Loading Behavior
 
 When using `/recall` or at session start:
 - Traverses from current file location to project root
-- Loads all `context_doc/INDEX.md` files in the path
+- Loads all `context_doc/README.md` files in the path
 - Nearest location has highest relevance
 - Sibling directories are NOT loaded (avoids irrelevant context)
 
@@ -153,21 +153,21 @@ When using `/recall` or at session start:
 
 | Loaded | Path | Reason |
 |--------|------|--------|
-| ✅ Yes | `packages/api/context_doc/INDEX.md` | Nearest location |
-| ✅ Yes | `context_doc/INDEX.md` | Root architecture |
-| ❌ No | `packages/ui/context_doc/INDEX.md` | Different branch path |
+| ✅ Yes | `packages/api/context_doc/README.md` | Nearest location |
+| ✅ Yes | `context_doc/README.md` | Root architecture |
+| ❌ No | `packages/ui/context_doc/README.md` | Different branch path |
 
 ## Index Format
 
-The `INDEX.md` file maintains a searchable table:
+The `README.md` file maintains a searchable table:
 
 ```markdown
 # Document Index
 
 | Title | Path | Type | Keywords | Date |
 |-------|------|------|----------|------|
-| API Authentication | docs/20260201-adr-api-auth.md | ADR | auth, jwt, oauth | 2026-02-01 |
-| User Service Design | docs/20260202-design-user-service.md | Design | user, crud, api | 2026-02-02 |
+| API Authentication | [API Authentication](docs/20260201-adr-api-auth.md) | ADR | auth, jwt, oauth | 2026-02-01 |
+| User Service Design | [User Service Design](docs/20260202-design-user-service.md) | Design | user, crud, api | 2026-02-02 |
 ```
 
 ## File Naming Convention
@@ -193,7 +193,7 @@ Examples:
 ```
 Session Start
     ↓
-Load INDEX.md (from current path to root)
+Load README.md (from current path to root)
     ↓
 Work on task
     ↓
@@ -201,7 +201,7 @@ Work on task
     ↓
 /doc <type> → User selects output location
     ↓
-Generate documentation → Update INDEX.md
+Generate documentation → Update README.md
 ```
 
 ## License

@@ -8,8 +8,8 @@ Validate all `context_doc/` directories in the project to ensure they conform to
 ## Process
 
 1. **Discover all context_doc directories**:
-   - Run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/find-context-docs.sh $(pwd)` to find all `context_doc/INDEX.md` files from the current location to the project root
-   - Extract the parent directory of each INDEX.md to get `context_doc/` paths
+   - Run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/find-context-docs.sh $(pwd)` to find all `context_doc/README.md` files from the current location to the project root
+   - Extract the parent directory of each README.md to get `context_doc/` paths
    - If no context_doc directories are found, inform the user and suggest using `/doc` to create documentation first
 
 2. **Run validation on each context_doc directory**:
@@ -28,7 +28,7 @@ Validate all `context_doc/` directories in the project to ensure they conform to
    Group results by category and compute summary:
    - **structure** → "Directory Structure"
    - **naming** → "Document Naming"
-   - **index** → "INDEX.md Format"
+   - **index** → "README.md Format"
    - **consistency** → "Cross-Reference"
 
 4. **Display maintenance report**:
@@ -44,7 +44,7 @@ Validate all `context_doc/` directories in the project to ensure they conform to
    |----------|--------|---------|
    | Directory Structure | ✓ PASS | All N checks passed |
    | Document Naming | ✗ FAIL | M issue(s) found |
-   | INDEX.md Format | ✓ PASS | All N checks passed |
+   | README.md Format | ✓ PASS | All N checks passed |
    | Cross-Reference | ⚠ WARN | M warning(s) found |
    ```
 
@@ -60,7 +60,7 @@ Validate all `context_doc/` directories in the project to ensure they conform to
    #### Issues Found
 
    1. ✗ **Naming**: `old-doc.md` doesn't match `YYYYMMDD-<doctype>-<title>.md`
-   2. ⚠ **Orphan**: `docs/20260203-design-new.md` is not in INDEX.md
+   2. ⚠ **Orphan**: `docs/20260203-design-new.md` is not in README.md
    ```
 
    **If all checks pass**, display:
@@ -70,12 +70,12 @@ Validate all `context_doc/` directories in the project to ensure they conform to
 
 5. **Suggest actions for failures**:
    If issues are found, provide actionable recommendations:
-   - **Missing INDEX.md**: "Run `/doc` to create a document, which will auto-create INDEX.md"
+   - **Missing README.md**: "Run `/doc` to create a document, which will auto-create README.md"
    - **Missing docs/ directory**: "Create `docs/` directory inside context_doc"
    - **Naming violations**: "Rename file to follow `YYYYMMDD-<doctype>-<title>.md` format"
    - **Old-style subdirectories**: "Move files from old subdirectories into `docs/` with proper naming"
    - **Invalid INDEX Type**: "Update Type column to one of: ADR, Design, Runbook, Handoff, How-To"
-   - **Orphan files**: "Add missing entries to INDEX.md using the index format"
+   - **Orphan files**: "Add missing entries to README.md using the index format"
    - **Missing files**: "Remove stale INDEX entries or restore the missing document files"
    - **Type/doctype mismatch**: "Ensure INDEX Type matches the doctype in the filename"
 
@@ -92,23 +92,23 @@ Validate all `context_doc/` directories in the project to ensure they conform to
 |----------|--------|---------|
 | Directory Structure | ✓ PASS | All 4 checks passed |
 | Document Naming | ✗ FAIL | 1 issue found |
-| INDEX.md Format | ✓ PASS | All 5 checks passed |
+| README.md Format | ✓ PASS | All 5 checks passed |
 | Cross-Reference | ⚠ WARN | 1 warning found |
 
 #### Issues Found
 
 1. ✗ **Naming**: `old-doc.md` doesn't match `YYYYMMDD-<doctype>-<title>.md`
-2. ⚠ **Orphan**: `docs/20260203-design-new.md` is not in INDEX.md
+2. ⚠ **Orphan**: `docs/20260203-design-new.md` is not in README.md
 
 #### Recommendations
 
 - Rename `old-doc.md` to follow `YYYYMMDD-<doctype>-<title>.md` format
-- Add `docs/20260203-design-new.md` to INDEX.md
+- Add `docs/20260203-design-new.md` to README.md
 ```
 
 ## Edge Cases
 
 - **No context_doc directories found**: Report this and suggest using `/doc` to create documentation
 - **Empty docs/ directory**: Report as INFO, not a failure
-- **INDEX.md exists but has no entries**: Report as INFO
+- **README.md exists but has no entries**: Report as INFO
 - **Multiple context_doc directories** (monorepo): Validate each independently, report all results

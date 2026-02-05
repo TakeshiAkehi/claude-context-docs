@@ -57,9 +57,9 @@ You are a context retrieval specialist that analyzes document indexes and loads 
 1. **Find Relevant Indices (Monorepo Support)**:
    - Identify the current file/directory context
    - Use `bash ${CLAUDE_PLUGIN_ROOT}/scripts/find-context-docs.sh <current_path>` if in monorepo
-   - Or check for single `context_doc/INDEX.md` at project root
+   - Or check for single `context_doc/README.md` at project root
    - Traverse from current location to project root (`$CLAUDE_PROJECT_DIR`)
-   - Load each `context_doc/INDEX.md` found along the path
+   - Load each `context_doc/README.md` found along the path
    - Tag entries with their source level (module path or "root")
 
 2. **Identify Keywords**:
@@ -107,16 +107,16 @@ You are a context retrieval specialist that analyzes document indexes and loads 
 **Monorepo Behavior:**
 
 In a monorepo with git submodules:
-- Multiple `context_doc/INDEX.md` files may exist at different levels
+- Multiple `context_doc/README.md` files may exist at different levels
 - Documents from the nearest module have higher base relevance
 - Root-level documents provide overall architecture context
 - Only load indices from ancestor paths (current location → root)
 - Sibling module indices are NOT loaded (avoids irrelevant context)
 
 **Example**: Working on `packages/api/src/handlers.ts`:
-- Load: `packages/api/context_doc/INDEX.md` (nearest, highest relevance)
-- Load: `context_doc/INDEX.md` (root, architecture context)
-- NOT load: `packages/ui/context_doc/INDEX.md` (different branch)
+- Load: `packages/api/context_doc/README.md` (nearest, highest relevance)
+- Load: `context_doc/README.md` (root, architecture context)
+- NOT load: `packages/ui/context_doc/README.md` (different branch)
 
 **Edge Cases:**
 

@@ -18,7 +18,7 @@ if [[ "$CONTEXT_DOC" != /* ]]; then
 fi
 CONTEXT_DOC=$(cd "$CONTEXT_DOC" 2>/dev/null && pwd || echo "$CONTEXT_DOC")
 
-INDEX_FILE="$CONTEXT_DOC/INDEX.md"
+INDEX_FILE="$CONTEXT_DOC/README.md"
 DOCS_DIR="$CONTEXT_DOC/docs"
 
 VALID_DOCTYPES="adr|design|runbook|handoff|howto"
@@ -28,9 +28,9 @@ OLD_SUBDIRS="adr design runbook handoff howto"
 # ── Directory Structure ──────────────────────────────────────────────
 
 if [[ -f "$INDEX_FILE" ]]; then
-    echo "PASS structure INDEX.md exists"
+    echo "PASS structure README.md exists"
 else
-    echo "FAIL structure INDEX.md not found at $INDEX_FILE"
+    echo "FAIL structure README.md not found at $INDEX_FILE"
 fi
 
 if [[ -d "$DOCS_DIR" ]]; then
@@ -97,7 +97,7 @@ if [[ -d "$DOCS_DIR" ]]; then
     fi
 fi
 
-# ── INDEX.md Format ──────────────────────────────────────────────────
+# ── README.md Format ─────────────────────────────────────────────────
 
 if [[ -f "$INDEX_FILE" ]]; then
     # Check header
@@ -132,11 +132,11 @@ if [[ -f "$INDEX_FILE" ]]; then
         TYPE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $4); print $4}')
         DATE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $6); print $6}')
 
-        # Check Path starts with docs/
-        if [[ "$PATH_VAL" == docs/* ]]; then
-            echo "PASS index Row $ROW_NUM: Path starts with docs/ ($PATH_VAL)"
+        # Check Path is markdown link format [Title](docs/...)
+        if [[ "$PATH_VAL" =~ ^\[.+\]\(docs/.+\)$ ]]; then
+            echo "PASS index Row $ROW_NUM: Path is valid link format ($PATH_VAL)"
         else
-            echo "FAIL index Row $ROW_NUM: Path should start with docs/ (got: $PATH_VAL)"
+            echo "FAIL index Row $ROW_NUM: Path should be [Title](docs/...) format (got: $PATH_VAL)"
         fi
 
         # Check Type is valid
@@ -156,14 +156,14 @@ if [[ -f "$INDEX_FILE" ]]; then
     done < "$INDEX_FILE"
 
     if [[ $ROW_NUM -eq 0 ]]; then
-        echo "INFO index INDEX.md has no document entries"
+        echo "INFO index README.md has no document entries"
     fi
 fi
 
 # ── Cross-Reference (Consistency) ────────────────────────────────────
 
 if [[ -f "$INDEX_FILE" && -d "$DOCS_DIR" ]]; then
-    # Collect all paths referenced in INDEX.md
+    # Collect all paths referenced in README.md
     INDEX_PATHS=()
     while IFS= read -r line; do
         if echo "$line" | grep -qE '^\|\s*Title\s*\|'; then continue; fi
@@ -175,19 +175,26 @@ if [[ -f "$INDEX_FILE" && -d "$DOCS_DIR" ]]; then
         PATH_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $3); print $3}')
         TYPE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $4); print $4}')
 
-        if [[ -n "$PATH_VAL" ]]; then
-            INDEX_PATHS+=("$PATH_VAL")
-            FULL_PATH="$CONTEXT_DOC/$PATH_VAL"
+        # Extract actual path from markdown link format [Title](path)
+        if [[ "$PATH_VAL" =~ ^\[.+\]\((.+)\)$ ]]; then
+            ACTUAL_PATH="${BASH_REMATCH[1]}"
+        else
+            ACTUAL_PATH="$PATH_VAL"
+        fi
+
+        if [[ -n "$ACTUAL_PATH" ]]; then
+            INDEX_PATHS+=("$ACTUAL_PATH")
+            FULL_PATH="$CONTEXT_DOC/$ACTUAL_PATH"
 
             # Check file exists
             if [[ -f "$FULL_PATH" ]]; then
-                echo "PASS consistency INDEX entry '$PATH_VAL' has matching file"
+                echo "PASS consistency README entry '$ACTUAL_PATH' has matching file"
             else
-                echo "FAIL consistency INDEX entry '$PATH_VAL' — file not found"
+                echo "FAIL consistency README entry '$ACTUAL_PATH' — file not found"
             fi
 
             # Check Type vs filename doctype consistency
-            FNAME=$(basename "$PATH_VAL")
+            FNAME=$(basename "$ACTUAL_PATH")
             if [[ "$FNAME" =~ ^[0-9]{8}-([a-z]+)- ]]; then
                 FILE_DOCTYPE="${BASH_REMATCH[1]}"
                 # Map INDEX Type to filename doctype
@@ -224,7 +231,7 @@ if [[ -f "$INDEX_FILE" && -d "$DOCS_DIR" ]]; then
                 done
             fi
             if [[ "$FOUND" == false ]]; then
-                echo "WARN consistency Orphan file: $REL_PATH (not in INDEX.md)"
+                echo "WARN consistency Orphan file: $REL_PATH (not in README.md)"
             fi
         done <<< "$FILES"
     fi

@@ -24,7 +24,7 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
 /doc command (commands/doc.md)
     → AskUserQuestion (user selects output location)
     → Creates document using skills/documentation/templates/<type>.md
-    → scripts/update-index.sh (updates INDEX.md at selected location)
+    → scripts/update-index.sh (updates README.md at selected location)
     → Saves path preference to .claude/doc-paths.json
 
 /recall command (commands/recall.md)
@@ -48,11 +48,11 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
 - Path history stored in `$CLAUDE_PROJECT_DIR/.claude/doc-paths.json`
 
 **Context Loading (on-demand via /recall)**:
-- `find-context-docs.sh`: Traverses from current path UP to project root, collecting all `context_doc/INDEX.md` files (nearest first)
+- `find-context-docs.sh`: Traverses from current path UP to project root, collecting all `context_doc/README.md` files (nearest first)
 - Sibling directory indices are never loaded - only ancestor paths
 - No automatic loading at session start — user invokes `/recall` when context is needed
 
-**Index Format**: Markdown table in `context_doc/INDEX.md` with columns: Title, Path, Type, Keywords, Date
+**Index Format**: Markdown table in `context_doc/README.md` with columns: Title, Path, Type, Keywords, Date
 
 **File Naming**: `YYYYMMDD-<doctype>-title.md` format for all documents (all stored in `context_doc/docs/`)
 
@@ -65,9 +65,9 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
 
 | Path | Purpose |
 |------|---------|
-| `scripts/find-context-docs.sh` | Find all INDEX.md files from path to root |
+| `scripts/find-context-docs.sh` | Find all README.md files from path to root |
 | `scripts/load-index.sh` | Loads and merges document indices (used by /recall) |
-| `scripts/update-index.sh` | Appends entry to INDEX.md (accepts doc_root parameter) |
+| `scripts/update-index.sh` | Appends entry to README.md (accepts doc_root parameter) |
 | `commands/doc.md` | Instructions for /doc command (includes AskUserQuestion for path selection) |
 | `commands/recall.md` | Instructions for /recall command |
 | `commands/maintain.md` | Instructions for /maintain command |

@@ -12,14 +12,14 @@ Load relevant documentation from the project's context_doc directories to build 
    - Determine current working context (file being edited, current directory)
    - Use `bash ${CLAUDE_PLUGIN_ROOT}/scripts/find-context-docs.sh $(pwd)` to find all indices
    - Traverse from current location to project root
-   - Load all `context_doc/INDEX.md` files found along the path
+   - Load all `context_doc/README.md` files found along the path
    - Merge indices with hierarchy indicators (nearest module first, then root)
    - If no indices exist, inform user to create documents first using `/doc`
 
    **Hierarchy Order (nearest first):**
-   - Nearest module's `context_doc/INDEX.md` (most specific, highest relevance)
+   - Nearest module's `context_doc/README.md` (most specific, highest relevance)
    - Parent directories' indices (if any)
-   - Root `context_doc/INDEX.md` (most general, architecture-level)
+   - Root `context_doc/README.md` (most general, architecture-level)
 
 2. **Determine search strategy**:
 
@@ -82,9 +82,9 @@ In a monorepo with submodules:
 
 | Loaded | Path | Reason |
 |--------|------|--------|
-| Yes | `packages/api/context_doc/INDEX.md` | Nearest module |
-| Yes | `context_doc/INDEX.md` | Root architecture |
-| No | `packages/ui/context_doc/INDEX.md` | Different module path |
+| Yes | `packages/api/context_doc/README.md` | Nearest module |
+| Yes | `context_doc/README.md` | Root architecture |
+| No | `packages/ui/context_doc/README.md` | Different module path |
 
 ## Edge Cases
 

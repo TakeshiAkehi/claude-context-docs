@@ -11,7 +11,7 @@ KEYWORDS="$4"
 DOC_ROOT="${5:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"
 DATE=$(date +%Y-%m-%d)
 
-INDEX_FILE="$DOC_ROOT/context_doc/INDEX.md"
+INDEX_FILE="$DOC_ROOT/context_doc/README.md"
 
 # Create index if it doesn't exist
 if [ ! -f "$INDEX_FILE" ]; then
@@ -24,7 +24,7 @@ if [ ! -f "$INDEX_FILE" ]; then
 EOF
 fi
 
-# Add new entry
-echo "| $TITLE | $PATH_ARG | $TYPE | $KEYWORDS | $DATE |" >> "$INDEX_FILE"
+# Add new entry (Path column uses markdown link format: [Title](path))
+echo "| $TITLE | [$TITLE]($PATH_ARG) | $TYPE | $KEYWORDS | $DATE |" >> "$INDEX_FILE"
 
 echo "Index updated in $DOC_ROOT: $TITLE"

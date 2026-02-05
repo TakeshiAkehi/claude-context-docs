@@ -29,11 +29,11 @@ The project is structured as a single-plugin marketplace with a standardized mar
 
 ### 1. Hierarchical Document Discovery (Monorepo Support)
 
-The system traverses **upward** from the current file location to the project root to find all `context_doc/INDEX.md` files:
+The system traverses **upward** from the current file location to the project root to find all `context_doc/README.md` files:
 
-- **Nearest module index** (e.g., `packages/api/context_doc/INDEX.md`) - highest relevance
+- **Nearest module index** (e.g., `packages/api/context_doc/README.md`) - highest relevance
 - **Parent directory indices** (if any)
-- **Root index** (e.g., `context_doc/INDEX.md`) - architecture-level context
+- **Root index** (e.g., `context_doc/README.md`) - architecture-level context
 
 This hierarchy means documents are loaded based on proximity to where you're working, avoiding irrelevant context from sibling modules.
 
@@ -41,7 +41,7 @@ This hierarchy means documents are loaded based on proximity to where you're wor
 
 ### 2. Document Index as Single Source of Truth
 
-Instead of loading all documents into context at session start, only the `INDEX.md` file (a markdown table) is loaded. This provides:
+Instead of loading all documents into context at session start, only the `README.md` file (a markdown table) is loaded. This provides:
 
 - **Efficient context**: Index metadata (title, keywords, type) instead of full documents
 - **Selective loading**: Only relevant documents fetched via `/recall` command
@@ -78,9 +78,9 @@ This standardization enables distribution and installation via `/plugin marketpl
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/find-context-docs.sh` | Traverse from path to project root, collecting all `context_doc/INDEX.md` files. Output: list of index paths (nearest first). |
+| `scripts/find-context-docs.sh` | Traverse from path to project root, collecting all `context_doc/README.md` files. Output: list of index paths (nearest first). |
 | `scripts/load-index.sh` | SessionStart hook that loads and merges indices. Outputs JSON systemMessage containing merged documentation. |
-| `scripts/update-index.sh` | Append a new document entry to INDEX.md. Called after `/doc` generates a new document. |
+| `scripts/update-index.sh` | Append a new document entry to README.md. Called after `/doc` generates a new document. |
 | `scripts/validate-context-docs.sh` | Validate a `context_doc/` directory against plugin conventions. Output: one line per check result. |
 
 All scripts handle absolute/relative path normalization and use `$CLAUDE_PROJECT_DIR` for cross-platform compatibility.
@@ -99,7 +99,7 @@ Generate documentation from current conversation context.
 3. Generate document using template
 4. Ask user to select output location (project root, current dir, custom, or recent)
 5. Show preview and get user confirmation
-6. Save document and update INDEX.md
+6. Save document and update README.md
 7. Persist selected path to `.claude/doc-paths.json`
 
 **Related files**: `commands/doc.md`, `skills/documentation/templates/`
@@ -121,7 +121,7 @@ Load relevant documentation from `context_doc/` directories.
 
 Validate all `context_doc/` directories conform to plugin conventions.
 
-**Checks**: directory structure, document naming, INDEX.md format, cross-reference consistency
+**Checks**: directory structure, document naming, README.md format, cross-reference consistency
 
 **Process**:
 1. Discover all `context_doc/` directories via `find-context-docs.sh`
@@ -167,7 +167,7 @@ This format ensures:
 
 ## Index Format
 
-The `INDEX.md` file is a markdown table with columns:
+The `README.md` file is a markdown table with columns:
 
 | Title | Path | Type | Keywords | Date |
 |-------|------|------|----------|------|
@@ -178,8 +178,8 @@ Example:
 
 | Title | Path | Type | Keywords | Date |
 |-------|------|------|----------|------|
-| API Authentication Strategy | docs/20260201-adr-api-auth.md | ADR | auth, jwt, oauth, security | 2026-02-01 |
-| User Service Design | docs/20260202-design-user-service.md | Design | user, crud, api, database | 2026-02-02 |
+| API Authentication Strategy | [API Authentication Strategy](docs/20260201-adr-api-auth.md) | ADR | auth, jwt, oauth, security | 2026-02-01 |
+| User Service Design | [User Service Design](docs/20260202-design-user-service.md) | Design | user, crud, api, database | 2026-02-02 |
 ```
 
 ## Development Guidelines
@@ -204,7 +204,7 @@ All scripts use `set -euo pipefail` for safety. When modifying:
 
 ### Backwards Compatibility
 
-The `load-index.sh` script includes backwards compatibility fallback (lines 20-32) for projects with a single root-level `INDEX.md`. Maintain this fallback when making changes.
+The `load-index.sh` script includes backwards compatibility fallback (lines 20-32) for projects with a single root-level `README.md`. Maintain this fallback when making changes.
 
 ## Related Documentation
 

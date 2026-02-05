@@ -119,7 +119,7 @@ All documents use the format: `YYYYMMDD-<doctype>-<title>.md`
 
 ### Index Location
 
-`context_doc/INDEX.md`
+`context_doc/README.md`
 
 ### Index Format
 
@@ -128,7 +128,7 @@ All documents use the format: `YYYYMMDD-<doctype>-<title>.md`
 
 | Title | Path | Type | Keywords | Date |
 |-------|------|------|----------|------|
-| API Authentication with JWT | docs/20260202-adr-api-auth-jwt.md | ADR | auth, jwt, security, api | 2026-02-02 |
+| API Authentication with JWT | [API Authentication with JWT](docs/20260202-adr-api-auth-jwt.md) | ADR | auth, jwt, security, api | 2026-02-02 |
 ```
 
 ### Keywords Guidelines

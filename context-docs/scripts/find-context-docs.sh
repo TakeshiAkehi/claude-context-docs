@@ -1,7 +1,7 @@
 #!/bin/bash
-# Find all context_doc/INDEX.md files from a path up to project root
+# Find all context_doc/README.md files from a path up to project root
 # Usage: find-context-docs.sh [start_path]
-# Output: List of paths to INDEX.md files, from nearest to root
+# Output: List of paths to README.md files, from nearest to root
 set -euo pipefail
 
 START_PATH="${1:-$(pwd)}"
@@ -24,7 +24,7 @@ CURRENT="$START_PATH"
 INDICES=()
 
 while [[ "$CURRENT" == "$PROJECT_ROOT"* || "$CURRENT" == "$PROJECT_ROOT" ]]; do
-    INDEX_FILE="$CURRENT/context_doc/INDEX.md"
+    INDEX_FILE="$CURRENT/context_doc/README.md"
     if [[ -f "$INDEX_FILE" ]]; then
         INDICES+=("$INDEX_FILE")
     fi

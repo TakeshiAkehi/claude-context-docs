@@ -18,7 +18,7 @@ INDICES=$("$SCRIPT_DIR/find-context-docs.sh" "$START_PATH" 2>/dev/null || echo "
 
 if [[ -z "$INDICES" ]]; then
     # Fallback: check single index at project root (backward compatibility)
-    INDEX_FILE="$PROJECT_ROOT/context_doc/INDEX.md"
+    INDEX_FILE="$PROJECT_ROOT/context_doc/README.md"
     if [[ ! -f "$INDEX_FILE" ]]; then
         cat <<EOF
 {
