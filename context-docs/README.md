@@ -21,7 +21,7 @@ This plugin helps you create and manage project documentation that serves dual p
 
 | Type | Count | Description |
 |------|-------|-------------|
-| Commands | 2 | `/doc`, `/recall` |
+| Commands | 3 | `/doc`, `/recall`, `/migrate` |
 | Hooks | 1 | SessionStart (インデックス自動読み込み) |
 | Skills | 1 | documentation-standards |
 | Agents | 1 | context-loader |
@@ -37,12 +37,14 @@ context-docs/
 │   └── context-loader.md    # Document retrieval agent
 ├── commands/
 │   ├── doc.md               # /doc command
+│   ├── migrate.md           # /migrate command
 │   └── recall.md            # /recall command
 ├── hooks/
 │   └── hooks.json           # SessionStart hook
 ├── scripts/
 │   ├── find-context-docs.sh # Find indices from path to root
 │   ├── load-index.sh        # Index loader script
+│   ├── migrate-docs.sh      # Migration script (old → new structure)
 │   └── update-index.sh      # Index updater script
 ├── skills/
 │   └── documentation/
@@ -93,6 +95,15 @@ Where should this ADR document be saved?
 /recall              # Auto-detect relevant docs from current task
 /recall auth api     # Search for docs matching "auth" and "api"
 ```
+
+### Migrate from Old Structure
+
+```bash
+/migrate             # Auto-discover and migrate all context_doc/ locations
+/migrate /path/to/context_doc  # Migrate a specific context_doc/ directory
+```
+
+Migrates from the old per-type subdirectory structure (`context_doc/adr/`, `context_doc/design/`, etc.) to the new flat `context_doc/docs/` structure with doctype-prefixed filenames.
 
 ### Automatic Behavior
 
