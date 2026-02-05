@@ -33,6 +33,11 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
     → scripts/load-index.sh (loads and merges indices)
     → Loads and presents relevant documents
 
+/maintain command (commands/maintain.md)
+    → scripts/find-context-docs.sh (discovers all context_doc/ dirs)
+    → scripts/validate-context-docs.sh (validates each directory)
+    → Displays categorized report with recommendations
+
 ```
 
 ### Key Design Decisions
@@ -65,6 +70,8 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
 | `scripts/update-index.sh` | Appends entry to INDEX.md (accepts doc_root parameter) |
 | `commands/doc.md` | Instructions for /doc command (includes AskUserQuestion for path selection) |
 | `commands/recall.md` | Instructions for /recall command |
+| `commands/maintain.md` | Instructions for /maintain command |
+| `scripts/validate-context-docs.sh` | Validates context_doc/ directory against conventions |
 | `agents/context-loader.md` | Agent definition for document retrieval |
 | `skills/documentation/SKILL.md` | Documentation standards and guidelines |
 

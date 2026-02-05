@@ -12,6 +12,7 @@ This plugin helps you create and manage project documentation that serves dual p
 
 - **Document Generation** (`/doc <type>`) - Generate ADR, Design Doc, Runbook, or Handoff with interactive path selection
 - **Smart Recall** (`/recall [query]`) - Load relevant documents based on current task or explicit query
+- **Structure Validation** (`/maintain`) - Validate context_doc directories conform to plugin conventions
 - **Automatic Indexing** - Maintains a searchable index of all documents
 - **Session Integration** - Automatically loads document index at session start
 - **Flexible Output** - Save documents to any location (project root, current directory, or custom path)
@@ -21,7 +22,7 @@ This plugin helps you create and manage project documentation that serves dual p
 
 | Type | Count | Description |
 |------|-------|-------------|
-| Commands | 2 | `/doc`, `/recall` |
+| Commands | 3 | `/doc`, `/recall`, `/maintain` |
 | Hooks | 1 | SessionStart (インデックス自動読み込み) |
 | Skills | 1 | documentation-standards |
 | Agents | 1 | context-loader |
@@ -37,13 +38,15 @@ context-docs/
 │   └── context-loader.md    # Document retrieval agent
 ├── commands/
 │   ├── doc.md               # /doc command
+│   ├── maintain.md          # /maintain command
 │   └── recall.md            # /recall command
 ├── hooks/
 │   └── hooks.json           # SessionStart hook
 ├── scripts/
-│   ├── find-context-docs.sh # Find indices from path to root
-│   ├── load-index.sh        # Index loader script
-│   └── update-index.sh      # Index updater script
+│   ├── find-context-docs.sh          # Find indices from path to root
+│   ├── load-index.sh                 # Index loader script
+│   ├── update-index.sh               # Index updater script
+│   └── validate-context-docs.sh      # Validate context_doc structure
 ├── skills/
 │   └── documentation/
 │       ├── SKILL.md         # Documentation standards
@@ -92,6 +95,12 @@ Where should this ADR document be saved?
 ```bash
 /recall              # Auto-detect relevant docs from current task
 /recall auth api     # Search for docs matching "auth" and "api"
+```
+
+### Validate Structure
+
+```bash
+/maintain            # Check all context_doc/ directories for convention compliance
 ```
 
 ### Automatic Behavior
