@@ -1,6 +1,6 @@
 ---
 name: documentation-standards
-description: This skill should be used when creating ADR, Design Doc, Runbook, Handoff, or How-To documents, when following documentation best practices, when structuring technical documentation, or when maintaining document indexes.
+description: This skill should be used when creating ADR, Design Doc, Feature Specification, Runbook, Handoff, or How-To documents, when following documentation best practices, when structuring technical documentation, or when maintaining document indexes.
 version: 1.0.0
 ---
 
@@ -45,6 +45,25 @@ version: 1.0.0
 - Testing Strategy
 
 **Template**: `${CLAUDE_PLUGIN_ROOT}/skills/documentation/templates/design.md`
+
+### Feature Specification
+
+**Purpose**: Record what a completed feature does — its behavior, inputs/outputs, constraints, and edge cases — from the user's perspective.
+
+**When to create**:
+- After implementing a feature, to document its final behavior
+- When a feature's behavior needs to be clearly communicated
+- To capture acceptance criteria and expected behavior for a specific function
+- When distinguishing "what it does" from "how it's built"
+
+**Key sections**:
+- Summary and Motivation
+- Scope (In scope / Out of scope)
+- Behavior (Inputs, Normal Flow, Output, Error Cases, Edge Cases)
+- Constraints
+- Examples (concrete input/output pairs)
+
+**Template**: `${CLAUDE_PLUGIN_ROOT}/skills/documentation/templates/spec.md`
 
 ### Runbook
 
@@ -108,7 +127,7 @@ version: 1.0.0
 All documents use the format: `YYYYMMDD-<doctype>-<title>.md`
 
 - **Date**: Use current date at creation (YYYYMMDD)
-- **Doctype**: Document type (adr, design, runbook, handoff, howto)
+- **Doctype**: Document type (adr, design, spec, runbook, handoff, howto)
 - **Title**: Kebab-case, descriptive, 3-5 words
 - **Examples**:
   - `20260202-adr-api-authentication-jwt.md`

@@ -1,5 +1,5 @@
 ---
-description: Generate documentation (adr, design, runbook, handoff) from current context
+description: Generate documentation (adr, design, spec, runbook, handoff) from current context
 argument-hint: <type> [title]
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
 ---
@@ -11,13 +11,14 @@ Generate a documentation file based on the current conversation context.
 The first argument `$1` specifies the document type:
 - `adr` - Architecture Decision Record
 - `design` - Design Document
+- `spec` - Feature Specification (behavior and constraints of a completed feature)
 - `runbook` - Runbook (operational procedures)
 - `handoff` - Session handoff document
 - `howto` - How-To (development patterns and solutions)
 
 ## Process
 
-1. **Validate document type**: Ensure `$1` is one of: adr, design, runbook, handoff, howto. If invalid or missing, ask the user which type to create.
+1. **Validate document type**: Ensure `$1` is one of: adr, design, spec, runbook, handoff, howto. If invalid or missing, ask the user which type to create.
 
 2. **Auto-recall existing documents**: Before generating the document, automatically load relevant existing documentation to ensure consistency and avoid duplication.
    - Run the `/recall` command (using the Skill tool with skill "context-docs:recall") with keywords inferred from the document type and current conversation context
@@ -34,6 +35,7 @@ The first argument `$1` specifies the document type:
 4. **Gather additional information**: If essential information is missing for the document type, use AskUserQuestion to collect:
    - For ADR: Decision context, alternatives considered, consequences
    - For Design: Requirements, constraints, dependencies
+   - For Spec: Feature scope, normal/error behavior, constraints, concrete examples
    - For Runbook: Prerequisites, steps, error handling
    - For Handoff: Current state, next steps, blockers
    - For How-To: Problem description, solution approach, example code
@@ -43,7 +45,7 @@ The first argument `$1` specifies the document type:
 6. **Determine filename**:
    - Format: `YYYYMMDD-<doctype>-<title>.md`
    - Use current date (YYYYMMDD)
-   - `<doctype>` is the document type (adr, design, runbook, handoff, howto)
+   - `<doctype>` is the document type (adr, design, spec, runbook, handoff, howto)
    - If `$2` provided, use it as title (convert to kebab-case)
    - Otherwise, derive title from document content
 

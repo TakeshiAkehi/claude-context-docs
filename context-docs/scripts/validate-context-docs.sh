@@ -21,9 +21,9 @@ CONTEXT_DOC=$(cd "$CONTEXT_DOC" 2>/dev/null && pwd || echo "$CONTEXT_DOC")
 INDEX_FILE="$CONTEXT_DOC/README.md"
 DOCS_DIR="$CONTEXT_DOC/docs"
 
-VALID_DOCTYPES="adr|design|runbook|handoff|howto"
-VALID_INDEX_TYPES="ADR|Design|Runbook|Handoff|How-To"
-OLD_SUBDIRS="adr design runbook handoff howto"
+VALID_DOCTYPES="adr|design|spec|runbook|handoff|howto"
+VALID_INDEX_TYPES="ADR|Design|Spec|Runbook|Handoff|How-To"
+OLD_SUBDIRS="adr design spec runbook handoff howto"
 
 # ── Directory Structure ──────────────────────────────────────────────
 
@@ -202,6 +202,7 @@ if [[ -f "$INDEX_FILE" && -d "$DOCS_DIR" ]]; then
                 case "$TYPE_VAL" in
                     ADR)     EXPECTED_DOCTYPE="adr" ;;
                     Design)  EXPECTED_DOCTYPE="design" ;;
+                    Spec)    EXPECTED_DOCTYPE="spec" ;;
                     Runbook) EXPECTED_DOCTYPE="runbook" ;;
                     Handoff) EXPECTED_DOCTYPE="handoff" ;;
                     How-To)  EXPECTED_DOCTYPE="howto" ;;

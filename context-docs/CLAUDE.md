@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Claude Code plugin called `context-docs` that provides context-aware documentation management. It generates ADR, Design Doc, Runbook, and Handoff documents with intelligent indexing for efficient context retrieval.
+This is a Claude Code plugin called `context-docs` that provides context-aware documentation management. It generates ADR, Design Doc, Feature Specification, Runbook, and Handoff documents with intelligent indexing for efficient context retrieval.
 
 ## Testing the Plugin
 

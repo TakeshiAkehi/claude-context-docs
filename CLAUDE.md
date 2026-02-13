@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a marketplace for Claude Code plugins that provides context-aware documentation management. The main plugin is **context-docs**, which enables creation and retrieval of Architecture Decision Records (ADRs), Design Docs, Runbooks, and Handoff documents with intelligent indexing.
+This is a marketplace for Claude Code plugins that provides context-aware documentation management. The main plugin is **context-docs**, which enables creation and retrieval of Architecture Decision Records (ADRs), Design Docs, Feature Specifications, Runbooks, and Handoff documents with intelligent indexing.
 
 The project is structured as a single-plugin marketplace with a standardized marketplace format for easy sharing and distribution.
 
@@ -91,7 +91,7 @@ All scripts handle absolute/relative path normalization and use `$CLAUDE_PROJECT
 
 Generate documentation from current conversation context.
 
-**Types**: `adr`, `design`, `runbook`, `handoff`
+**Types**: `adr`, `design`, `spec`, `runbook`, `handoff`
 
 **Process**:
 1. Validate document type (ask user if missing/invalid)

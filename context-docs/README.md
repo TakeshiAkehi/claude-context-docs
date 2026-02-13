@@ -10,7 +10,7 @@ This plugin helps you create and manage project documentation that serves dual p
 
 ## Features
 
-- **Document Generation** (`/doc <type>`) - Generate ADR, Design Doc, Runbook, or Handoff with interactive path selection
+- **Document Generation** (`/doc <type>`) - Generate ADR, Design Doc, Feature Spec, Runbook, or Handoff with interactive path selection
 - **Smart Recall** (`/recall [query]`) - Load relevant documents based on current task or explicit query
 - **Structure Validation** (`/maintain`) - Validate context_doc directories conform to plugin conventions
 - **Automatic Indexing** - Maintains a searchable index of all documents
@@ -26,7 +26,7 @@ This plugin helps you create and manage project documentation that serves dual p
 | Hooks | 1 | SessionStart (インデックス自動読み込み) |
 | Skills | 1 | documentation-standards |
 | Agents | 1 | context-loader |
-| Templates | 4 | ADR, Design, Runbook, Handoff |
+| Templates | 5 | ADR, Design, Spec, Runbook, Handoff |
 
 ### Plugin Structure
 
@@ -54,7 +54,8 @@ context-docs/
 │           ├── adr.md
 │           ├── design.md
 │           ├── handoff.md
-│           └── runbook.md
+│           ├── runbook.md
+│           └── spec.md
 ├── CLAUDE.md
 └── README.md
 ```
@@ -65,6 +66,7 @@ context-docs/
 |------|---------|----------|
 | **ADR** | Architecture Decision Record | Making significant technical choices |
 | **Design Doc** | Design documentation | Planning feature implementation |
+| **Spec** | Feature Specification | Recording completed feature behavior and constraints |
 | **Runbook** | Operational procedures | Documenting how to perform tasks |
 | **Handoff** | Session transition notes | Ending a session or switching context |
 
@@ -75,6 +77,7 @@ context-docs/
 ```bash
 /doc adr       # Create an Architecture Decision Record
 /doc design    # Create a Design Document
+/doc spec      # Create a Feature Specification
 /doc runbook   # Create a Runbook
 /doc handoff   # Create a Handoff document
 ```
@@ -117,7 +120,7 @@ Documents are stored in `context_doc/` at your chosen location:
 your-chosen-path/
 ├── context_doc/
 │   ├── README.md          # Document index (auto-maintained)
-│   └── docs/             # All documents (ADR, Design, Runbook, Handoff, How-To)
+│   └── docs/             # All documents (ADR, Design, Spec, Runbook, Handoff, How-To)
 ```
 
 ## Multiple Documentation Locations
