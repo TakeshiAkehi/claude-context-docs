@@ -52,7 +52,7 @@ CLAUDE_PROJECT_DIR=/path/to/repo bash scripts/find-context-docs.sh /path/to/star
 - Sibling directory indices are never loaded - only ancestor paths
 - No automatic loading at session start — user invokes `/recall` when context is needed
 
-**Index Format**: Markdown table in `context_doc/README.md` with columns: Title, Path, Type, Keywords, Date
+**Index Format**: Markdown table in `context_doc/README.md` with columns: Title (markdown link), Type, Keywords, Date
 
 **File Naming**: `YYYYMMDD-<doctype>-title.md` format for all documents (all stored in `context_doc/docs/`)
 

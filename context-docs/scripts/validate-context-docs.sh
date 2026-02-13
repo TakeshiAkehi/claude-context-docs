@@ -108,17 +108,17 @@ if [[ -f "$INDEX_FILE" ]]; then
     fi
 
     # Check table header columns
-    if grep -qE '^\|\s*Title\s*\|\s*Path\s*\|\s*Type\s*\|\s*Keywords\s*\|\s*Date\s*\|' "$INDEX_FILE"; then
-        echo "PASS index Table has correct columns (Title|Path|Type|Keywords|Date)"
+    if grep -qE '^\|\s*Title\s*\|\s*Type\s*\|\s*Keywords\s*\|\s*Date\s*\|' "$INDEX_FILE"; then
+        echo "PASS index Table has correct columns (Title|Type|Keywords|Date)"
     else
-        echo "FAIL index Table columns don't match expected: Title|Path|Type|Keywords|Date"
+        echo "FAIL index Table columns don't match expected: Title|Type|Keywords|Date"
     fi
 
     # Check each data row
     ROW_NUM=0
     while IFS= read -r line; do
         # Skip header, separator, and empty lines
-        if echo "$line" | grep -qE '^\|\s*Title\s*\|'; then continue; fi
+        if echo "$line" | grep -qE '^\|\s*Title\s*\|.*\|\s*Type\s*\|'; then continue; fi
         if echo "$line" | grep -qE '^\|\s*-'; then continue; fi
         if [[ -z "$line" ]]; then continue; fi
         if echo "$line" | grep -qE '^#'; then continue; fi
@@ -127,16 +127,16 @@ if [[ -f "$INDEX_FILE" ]]; then
         ROW_NUM=$((ROW_NUM + 1))
 
         # Parse columns (pipe-delimited, trim whitespace)
-        TITLE=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}')
-        PATH_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $3); print $3}')
-        TYPE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $4); print $4}')
-        DATE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $6); print $6}')
+        # Format: | [Title](path) | Type | Keywords | Date |
+        TITLE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}')
+        TYPE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $3); print $3}')
+        DATE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $5); print $5}')
 
-        # Check Path is markdown link format [Title](docs/...)
-        if [[ "$PATH_VAL" =~ ^\[.+\]\(docs/.+\)$ ]]; then
-            echo "PASS index Row $ROW_NUM: Path is valid link format ($PATH_VAL)"
+        # Check Title is markdown link format [Title](docs/...)
+        if [[ "$TITLE_VAL" =~ ^\[.+\]\(docs/.+\)$ ]]; then
+            echo "PASS index Row $ROW_NUM: Title is valid link format ($TITLE_VAL)"
         else
-            echo "FAIL index Row $ROW_NUM: Path should be [Title](docs/...) format (got: $PATH_VAL)"
+            echo "FAIL index Row $ROW_NUM: Title should be [Title](docs/...) format (got: $TITLE_VAL)"
         fi
 
         # Check Type is valid
@@ -166,20 +166,20 @@ if [[ -f "$INDEX_FILE" && -d "$DOCS_DIR" ]]; then
     # Collect all paths referenced in README.md
     INDEX_PATHS=()
     while IFS= read -r line; do
-        if echo "$line" | grep -qE '^\|\s*Title\s*\|'; then continue; fi
+        if echo "$line" | grep -qE '^\|\s*Title\s*\|.*\|\s*Type\s*\|'; then continue; fi
         if echo "$line" | grep -qE '^\|\s*-'; then continue; fi
         if [[ -z "$line" ]]; then continue; fi
         if echo "$line" | grep -qE '^#'; then continue; fi
         if ! echo "$line" | grep -qE '^\|'; then continue; fi
 
-        PATH_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $3); print $3}')
-        TYPE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $4); print $4}')
+        TITLE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}')
+        TYPE_VAL=$(echo "$line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $3); print $3}')
 
-        # Extract actual path from markdown link format [Title](path)
-        if [[ "$PATH_VAL" =~ ^\[.+\]\((.+)\)$ ]]; then
+        # Extract actual path from Title column markdown link format [Title](path)
+        if [[ "$TITLE_VAL" =~ ^\[.+\]\((.+)\)$ ]]; then
             ACTUAL_PATH="${BASH_REMATCH[1]}"
         else
-            ACTUAL_PATH="$PATH_VAL"
+            ACTUAL_PATH="$TITLE_VAL"
         fi
 
         if [[ -n "$ACTUAL_PATH" ]]; then

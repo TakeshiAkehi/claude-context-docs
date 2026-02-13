@@ -167,10 +167,10 @@ The `README.md` file maintains a searchable table:
 ```markdown
 # Document Index
 
-| Title | Path | Type | Keywords | Date |
-|-------|------|------|----------|------|
-| API Authentication | [API Authentication](docs/20260201-adr-api-auth.md) | ADR | auth, jwt, oauth | 2026-02-01 |
-| User Service Design | [User Service Design](docs/20260202-design-user-service.md) | Design | user, crud, api | 2026-02-02 |
+| Title | Type | Keywords | Date |
+|-------|------|----------|------|
+| [API Authentication](docs/20260201-adr-api-auth.md) | ADR | auth, jwt, oauth | 2026-02-01 |
+| [User Service Design](docs/20260202-design-user-service.md) | Design | user, crud, api | 2026-02-02 |
 ```
 
 ## File Naming Convention

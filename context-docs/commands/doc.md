@@ -21,7 +21,12 @@ The first argument `$1` specifies the document type:
 1. **Validate document type**: Ensure `$1` is one of: adr, design, spec, runbook, handoff, howto. If invalid or missing, ask the user which type to create.
 
 2. **Auto-recall existing documents**: Before generating the document, automatically load relevant existing documentation to ensure consistency and avoid duplication.
-   - Run the `/recall` command (using the Skill tool with skill "context-docs:recall") with keywords inferred from the document type and current conversation context
+   - Do NOT use the Skill tool to invoke `/recall`. Instead, perform the recall logic inline:
+     1. Run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/find-context-docs.sh $(pwd)` to find all `context_doc/README.md` indices
+     2. Read each discovered `README.md` to get the document index tables
+     3. Infer relevant keywords from the document type and current conversation context
+     4. Search the loaded indices for documents matching those keywords (match against Title, Keywords, Type columns)
+     5. Read the top 1-3 most relevant documents found
    - If relevant documents are found, use them as additional context when generating the new document
    - If no indices or documents exist yet, skip this step silently and proceed
    - Do NOT ask the user for confirmation — this step runs automatically
@@ -128,15 +133,15 @@ The first argument `$1` specifies the document type:
 
 11. **Update index**: Add entry to `<selected_path>/context_doc/README.md`
     - Create README.md if it doesn't exist (use template format below)
-    - Add new row with: Title, Path, Type, Keywords, Date
+    - Add new row with: Title (as markdown link `[Title](docs/filename.md)`), Type, Keywords, Date
 
 ## Index Format
 
 ```markdown
 # Document Index
 
-| Title | Path | Type | Keywords | Date |
-|-------|------|------|----------|------|
+| Title | Type | Keywords | Date |
+|-------|------|----------|------|
 ```
 
 ## Keywords Extraction

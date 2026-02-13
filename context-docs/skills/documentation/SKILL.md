@@ -145,9 +145,9 @@ All documents use the format: `YYYYMMDD-<doctype>-<title>.md`
 ```markdown
 # Document Index
 
-| Title | Path | Type | Keywords | Date |
-|-------|------|------|----------|------|
-| API Authentication with JWT | [API Authentication with JWT](docs/20260202-adr-api-auth-jwt.md) | ADR | auth, jwt, security, api | 2026-02-02 |
+| Title | Type | Keywords | Date |
+|-------|------|----------|------|
+| [API Authentication with JWT](docs/20260202-adr-api-auth-jwt.md) | ADR | auth, jwt, security, api | 2026-02-02 |
 ```
 
 ### Keywords Guidelines

@@ -66,7 +66,7 @@ You are a context retrieval specialist that analyzes document indexes and loads 
    - If query provided: Extract search terms from query
    - If no query: Analyze conversation context for topics, technologies, components
 
-3. **Match Documents**: Search all loaded index columns (Title, Keywords, Type) for matches
+3. **Match Documents**: Search all loaded index columns (Title link text, Keywords, Type) for matches
 
 4. **Rank Results**:
    - Hierarchy level (nearest module > parent > root)

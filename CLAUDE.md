@@ -169,17 +169,19 @@ This format ensures:
 
 The `README.md` file is a markdown table with columns:
 
-| Title | Path | Type | Keywords | Date |
-|-------|------|------|----------|------|
+| Title | Type | Keywords | Date |
+|-------|------|----------|------|
+
+The Title column contains a markdown link: `[Title](docs/filename.md)`
 
 Example:
 ```markdown
 # Document Index
 
-| Title | Path | Type | Keywords | Date |
-|-------|------|------|----------|------|
-| API Authentication Strategy | [API Authentication Strategy](docs/20260201-adr-api-auth.md) | ADR | auth, jwt, oauth, security | 2026-02-01 |
-| User Service Design | [User Service Design](docs/20260202-design-user-service.md) | Design | user, crud, api, database | 2026-02-02 |
+| Title | Type | Keywords | Date |
+|-------|------|----------|------|
+| [API Authentication Strategy](docs/20260201-adr-api-auth.md) | ADR | auth, jwt, oauth, security | 2026-02-01 |
+| [User Service Design](docs/20260202-design-user-service.md) | Design | user, crud, api, database | 2026-02-02 |
 ```
 
 ## Development Guidelines

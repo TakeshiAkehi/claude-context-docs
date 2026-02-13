@@ -19,12 +19,12 @@ if [ ! -f "$INDEX_FILE" ]; then
   cat > "$INDEX_FILE" << 'EOF'
 # Document Index
 
-| Title | Path | Type | Keywords | Date |
-|-------|------|------|----------|------|
+| Title | Type | Keywords | Date |
+|-------|------|----------|------|
 EOF
 fi
 
-# Add new entry (Path column uses markdown link format: [Title](path))
-echo "| $TITLE | [$TITLE]($PATH_ARG) | $TYPE | $KEYWORDS | $DATE |" >> "$INDEX_FILE"
+# Add new entry (Title column uses markdown link format: [Title](path))
+echo "| [$TITLE]($PATH_ARG) | $TYPE | $KEYWORDS | $DATE |" >> "$INDEX_FILE"
 
 echo "Index updated in $DOC_ROOT: $TITLE"
